@@ -1,0 +1,22 @@
+<svg width="246" height="268" viewBox="0 0 246 268" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M222 2L243 88.0002L221.999 255L100.5 266H60.5L2.5 243L5.5 231L27.5 204L86.9995 219L171 204L200 124.5L175 64.0002L127 47.0002L51 58.0002L22.9995 28.5002V2H107H222Z" fill="#9F4F50" stroke-width="4" stroke="#4C1415"/>
+<path d="M186.082 35.1428L221.847 39.9329L216.066 102.466L228.433 135.956L205.5 172.647V227H165.156L136.814 255.343L100.843 237.87L58.7324 254.715L21.5 232L26.5 226L58.2666 246.285L101.156 229.129L135.186 245.657L161.843 219H197.5V170.353L219.567 135.044L207.934 103.535L213.152 47.0667L182.917 42.8567L151.544 17.7571L112.512 43.512L83.6592 28.551L87.3408 21.4495L112.487 34.4885L152.456 8.24243L186.082 35.1428Z" fill="#F8BDDC" stroke-width="4" stroke="#4C1415"/>
+<path d="M66.5 7.00024L99 25.5002L66.5 44.0002L34 25.5002L66.5 7.00024Z" fill="white"/>
+<mask id="stroke0_125_1849" fill="white">
+<path d="M66.5 7.00024L99 25.5002L66.5 44.0002L34 25.5002L66.5 7.00024Z"/>
+</mask>
+<path d="M99 25.5002L66.5 7.00024L34 25.5002L66.5 44.0002L99 25.5002Z" stroke-width="8" stroke="#4C1415" mask="url(#stroke0_125_1849)"/>
+<circle cx="65.5" cy="24.5002" r="6.5" fill="#4C1415"/>
+<circle cx="100.5" cy="254.5" r="6.5" fill="#FECD65" stroke-width="4" stroke="#4C1415"/>
+<circle cx="54.5" cy="226.5" r="6.5" fill="#FECD65" stroke-width="4" stroke="#4C1415"/>
+<circle cx="136.5" cy="223.5" r="6.5" fill="#FECD65" stroke-width="4" stroke="#4C1415"/>
+<circle cx="179.5" cy="242.5" r="6.5" fill="#FECD65" stroke-width="4" stroke="#4C1415"/>
+<circle cx="185.5" cy="196.5" r="6.5" fill="#FECD65" stroke-width="4" stroke="#4C1415"/>
+<circle cx="221.5" cy="175.5" r="6.5" fill="#FECD65" stroke-width="4" stroke="#4C1415"/>
+<circle cx="206.5" cy="137.5" r="6.5" fill="#FECD65" stroke-width="4" stroke="#4C1415"/>
+<circle cx="228.5" cy="89.5002" r="6.5" fill="#FECD65" stroke-width="4" stroke="#4C1415"/>
+<circle cx="192.5" cy="61.5002" r="6.5" fill="#FECD65" stroke-width="4" stroke="#4C1415"/>
+<circle cx="195.5" cy="19.5002" r="6.5" fill="#FECD65" stroke-width="4" stroke="#4C1415"/>
+<circle cx="151.5" cy="34.5002" r="6.5" fill="#FECD65" stroke-width="4" stroke="#4C1415"/>
+<circle cx="110.5" cy="18.5002" r="6.5" fill="#FECD65" stroke-width="4" stroke="#4C1415"/>
+</svg>

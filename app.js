@@ -133,7 +133,8 @@
     const bgEl = $('#stageBg');
     bgEl.innerHTML = '';
     if (letter.bg) {
-      bgEl.style.background = `url("${bgPath(letter.bg)}") center/cover no-repeat`;
+      // fit the portrait artwork to the screen height; wider screens get its base colour at the sides
+      bgEl.style.background = `url("${bgPath(letter.bg)}") center / auto 100% no-repeat, ${letter.bgColor || letter.color}`;
       return;
     }
     const c = letter.color;
