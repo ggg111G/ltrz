@@ -2,15 +2,21 @@
 
 A playful toy for little kids: Hebrew letters that come alive.
 
-- **Home** – all the letters bob around. Tap one: it plays a note and jumps onto its own stage.
-- **Stage** – tap the letter for a trick (jump, spin, squish, wiggle…), sparkles, its name and a word (🦁 אריה).
-  Tap 3 times fast for a costume change (next artwork variant). Drag it and let go: it springs back.
-  Tap the background for sparkles. Swipe or use the arrows for the next letter.
-- **🔎 איפה?** – a voice asks for a letter, pick it out of three. Stars for right answers.
+Every letter is a little character drawn in Figma and brought to life in code:
+its eyes follow your finger and blink, it breathes, and now and then it does its own thing
+(ב waggles its tongue, ח snores, ט huffs, י chomps, ס's four eyes look every which way…).
 
-No build step: open `index.html`, or serve the folder (`npx serve .`) and open it on a tablet/phone.
-Sound + speech start after the first tap. Speech uses the device's Hebrew text‑to‑speech voice
-(iPad/iPhone have one built in).
+- **Home** – all the letters, alive. Tap one and it reacts, then jumps onto its own stage.
+- **Stage** – one big letter on its own background. Tap it to make it react, drag it and let go to watch it spring back,
+  tap the background and it looks there. Swipe or use the arrows for the next letter.
+
+No build step, but it loads the SVGs with `fetch`, so serve the folder (`npx serve .`) rather than opening the file directly.
+
+## How the letters move
+
+[`rigs.js`](rigs.js) says which shapes in each SVG are eyes, pupils and moving parts, and gives each letter a mood
+(breathing speed, how often it blinks, how it watches you, and its quirk). The quirks themselves are in `app.js` (`QUIRKS`).
+Letters without a rig get their eyes found automatically; letters with no artwork yet get googly eyes.
 
 ## Swapping artwork
 
@@ -20,7 +26,6 @@ Everything is driven by [`letters.js`](letters.js).
   the first is the default and the rest are the costume changes.
 - A letter with an empty `art` list (צ ק ר ש ת right now) is drawn as a coloured glyph until you add artwork.
 - Per‑letter backgrounds: put a file in `assets/bg/` and set `bg: 'alef'` on the letter.
-- Your own voice: add `audio: 'assets/audio/alef.mp3'` to a letter and it plays instead of text‑to‑speech.
 
 To export from Figma: select the letters component set (and the `bg` set), add an **SVG** export, export,
 rename the files to the ids above (e.g. `Property 1=א, op=2.svg` → `alef-2.svg`), and set `ART_EXT = 'svg'`.
