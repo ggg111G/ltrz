@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#F6C6DD">
+<title>Letterz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="sky" aria-hidden="true"></div>
+
+  <!-- Home: all the letters -->
+  <main id="home" class="screen active">
+    <header class="top">
+      <h1 class="title">אוֹתִיּוֹת</h1>
+      <button id="playBtn" class="pill" aria-label="משחק">🔎 איפה?</button>
+    </header>
+    <div id="grid"></div>
+  </main>
+
+  <!-- Stage: one letter, big and alive -->
+  <section id="stage" class="screen" aria-live="polite">
+    <div id="stageBg"></div>
+    <div id="fx"></div>
+    <button class="round back" data-go="home" aria-label="בית">🏠</button>
+    <div id="hero" class="hero"><div class="hero-inner"></div><div class="shadow"></div></div>
+    <div id="caption" class="caption"></div>
+    <button class="round nav prev" id="prevBtn" aria-label="הקודמת">➡️</button>
+    <button class="round nav next" id="nextBtn" aria-label="הבאה">⬅️</button>
+  </section>
+
+  <!-- Game: find the letter -->
+  <section id="game" class="screen">
+    <div id="fx2"></div>
+    <button class="round back" data-go="home" aria-label="בית">🏠</button>
+    <div class="ask"><button id="askBtn" class="pill big">🔊</button><span id="askText"></span></div>
+    <div id="choices"></div>
+    <div id="stars"></div>
+  </section>
+
+  <div id="tapToStart"><div>👆<br>לְחַצִי כְּדֵי לְהַתְחִיל</div></div>
+
+  <script src="letters.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
