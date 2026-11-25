@@ -509,15 +509,90 @@
   const hero = $('#hero'), inner = hero.querySelector('.hero-inner');
   let idx = 0, star = null;
 
-  function bgFor(letter) {
-    const bgEl = $('#stageBg');
-    bgEl.innerHTML = '';
-    if (letter.bg) {
-      bgEl.style.background = `url("${bgPath(letter.bg)}") center / auto 100% no-repeat, ${letter.bgColor || letter.color}`;
+  // ---------------- animated backgrounds
+  const BG_RIGS = window.BG_RIGS || {};
+  const BG_ANIMS = {
+    drift: (s) => [{ transform: 'translateX(0)' }, { transform: `translateX(${s.amp || 20}px)` }, { transform: 'translateX(0)' }],
+    bob: (s) => [{ transform: 'translateY(0)' }, { transform: `translateY(${-(s.amp || 8)}px)` }, { transform: 'translateY(0)' }],
+    sway: (s) => [{ transform: `rotate(${-(s.amp || 5)}deg)` }, { transform: `rotate(${s.amp || 5}deg)` }, { transform: `rotate(${-(s.amp || 5)}deg)` }],
+    skew: (s) => [{ transform: `skewX(${-(s.amp || 3)}deg)` }, { transform: `skewX(${s.amp || 3}deg)` }, { transform: `skewX(${-(s.amp || 3)}deg)` }],
+    spin: () => [{ transform: 'rotate(0)' }, { transform: 'rotate(360deg)' }],
+    pulse: (s) => [{ transform: 'scale(1)' }, { transform: `scale(${s.amp || 1.1})` }, { transform: 'scale(1)' }],
+    glow: () => [{ filter: 'brightness(1) drop-shadow(0 0 0 #FFE9A0)' }, { filter: 'brightness(1.15) drop-shadow(0 0 14px #FFE9A0)' }, { filter: 'brightness(1) drop-shadow(0 0 0 #FFE9A0)' }],
+    light: (s) => [{ filter: 'brightness(1)', offset: 0 }, { filter: 'brightness(1)', offset: 0.45 }, { filter: `brightness(${s.amp || 1.3})`, offset: 0.5 }, { filter: `brightness(${s.amp || 1.3})`, offset: 0.9 }, { filter: 'brightness(1)', offset: 0.95 }],
+    twinkle: () => [{ transform: 'scale(1)', opacity: 1 }, { transform: 'scale(.4) rotate(45deg)', opacity: 0.4, offset: 0.5 }, { transform: 'scale(1)', opacity: 1 }],
+    blink: () => [{ transform: 'scaleY(1)', offset: 0 }, { transform: 'scaleY(1)', offset: 0.9 }, { transform: 'scaleY(.05)', offset: 0.94 }, { transform: 'scaleY(1)', offset: 0.98 }],
+    flicker: () => [0, 1, 2, 3, 4, 5, 6].map((k) => ({ transform: k % 6 === 0 ? 'scale(1)' : `scale(${0.9 + Math.random() * 0.14}, ${0.95 + Math.random() * 0.15}) skewX(${(Math.random() - 0.5) * 8}deg)` })),
+    pop: (s) => [{ transform: 'translateY(0)', offset: 0 }, { transform: 'translateY(0)', offset: 0.5 }, { transform: `translateY(${-(s.amp || 50)}px)`, offset: 0.58, easing: 'ease-in' }, { transform: 'translateY(0)', offset: 0.7 }, { transform: 'translateY(-6px)', offset: 0.75 }, { transform: 'translateY(0)', offset: 0.8 }],
+    rise: (s) => [{ transform: 'translateY(0) scale(1)', opacity: 1 }, { transform: `translateY(${-(s.amp || 40)}px) scale(1.3)`, opacity: 0 }],
+    flip: () => [{ transform: 'rotate(0)', offset: 0 }, { transform: 'rotate(0)', offset: 0.75 }, { transform: 'rotate(180deg)', offset: 0.9 }, { transform: 'rotate(180deg)', offset: 1 }],
+    puff: () => [{ transform: 'scale(1)', opacity: 1 }, { transform: 'scale(1.35)', opacity: 0.75 }, { transform: 'scale(1)', opacity: 1 }],
+    door: (s) => [{ transform: 'scaleX(1)', offset: 0 }, { transform: 'scaleX(1)', offset: 0.6 }, { transform: `scaleX(${s.amp || 0.8})`, offset: 0.7 }, { transform: `scaleX(${s.amp || 0.8})`, offset: 0.85 }, { transform: 'scaleX(1)', offset: 0.95 }],
+    look: (s) => { const a = s.amp || 40; return [[0, 0], [a, 0], [a, 0], [-a, a * 0.3], [-a, a * 0.3], [0, -a * 0.2], [0, 0]].map(([x, y]) => ({ transform: `translate(${x}px, ${y}px)` })); },
+  };
+  const bgHost = $('#stageBg');
+  let bgToken = 0;
+
+  async function bgFor(letter) {
+    const token = ++bgToken;
+    bgHost.innerHTML = '';
+    if (!letter.bg) {
+      const c = letter.color;
+      bgHost.style.background = `radial-gradient(circle at 50% 40%, #fff8 0 18%, transparent 60%), linear-gradient(180deg, #FBE3EE 0%, ${c}66 60%, ${c} 100%)`;
       return;
     }
-    const c = letter.color;
-    bgEl.style.background = `radial-gradient(circle at 50% 40%, #fff8 0 18%, transparent 60%), linear-gradient(180deg, #FBE3EE 0%, ${c}66 60%, ${c} 100%)`;
+    bgHost.style.background = letter.bgColor || letter.color;
+    let text;
+    try { text = await fetchSvg(bgPath(letter.bg)); } catch (e) { return; }
+    if (token !== bgToken) return;
+    const n = ++uid;
+    text = text.replace(/id="([^"]+)"/g, `id="$1_b${n}"`).replace(/url\(#([^)]+)\)/g, `url(#$1_b${n})`).replace(/href="#([^"]+)"/g, `href="#$1_b${n}"`);
+    bgHost.innerHTML = text;
+    const svg = bgHost.querySelector('svg');
+    svg.removeAttribute('width'); svg.removeAttribute('height');
+    svg.setAttribute('class', 'bg-svg');
+    fitBg();
+    if (reduceMotion) return;
+    const clipG = [...svg.children].find((c) => c.tagName === 'g' && c.getAttribute('clip-path'));
+    const host = clipG || svg;
+    const kids = [...host.children];
+    const topOf = (node) => { while (node.parentNode !== host && node.parentNode) node = node.parentNode; return node; };
+    for (const spec of BG_RIGS[letter.id] || []) {
+      if (spec.a === 'snow') { snow(svg, spec.n || 20); continue; }
+      const sets = Array.isArray(spec.el[0]) ? spec.el : [spec.el];
+      const make = BG_ANIMS[spec.a]; if (!make) continue;
+      sets.forEach((idx, i) => {
+        const nodes = [...new Set(idx.map((k) => kids[k]).filter(Boolean).map(topOf))];
+        if (!nodes.length) return;
+        const g = el('g', { class: 'bgpart' });
+        host.insertBefore(g, nodes[0]);
+        nodes.forEach((nd) => g.appendChild(nd));
+        g.style.transformOrigin = ORIGINS[spec.origin || 'center'] || spec.origin;
+        const dur = (spec.dur || 3) * 1000;
+        const delay = spec.random ? -Math.random() * dur : (spec.stagger || 0) * 1000 * i - dur * 20;
+        g.animate(make(spec), { duration: dur, iterations: Infinity, delay, easing: spec.a === 'spin' ? 'linear' : 'ease-in-out' });
+      });
+    }
+  }
+  function fitBg() {
+    const svg = bgHost.querySelector('svg'); if (!svg) return;
+    const vb = svg.viewBox.baseVal;
+    const narrower = innerWidth / innerHeight < vb.width / vb.height;
+    svg.setAttribute('preserveAspectRatio', narrower ? 'xMidYMid slice' : 'xMidYMid meet');
+  }
+  addEventListener('resize', fitBg);
+  function snow(svg, n) {
+    const vb = svg.viewBox.baseVal;
+    const g = el('g', { class: 'snow' });
+    for (let k = 0; k < n; k++) {
+      const r = rand(2.5, 6);
+      const c = el('circle', { cx: rand(0, vb.width), cy: -10, r, fill: '#fff', stroke: '#C46A7A', 'stroke-width': 1 });
+      g.appendChild(c);
+      const dur = rand(5000, 9000), sway = rand(-25, 25);
+      c.animate([{ transform: 'translate(0,0)' }, { transform: `translate(${sway}px, ${vb.height * 0.5}px)` }, { transform: `translate(${-sway}px, ${vb.height + 20}px)` }],
+        { duration: dur, iterations: Infinity, delay: -rand(0, dur) });
+    }
+    svg.appendChild(g);
   }
 
   async function openStage(i) {

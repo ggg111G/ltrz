@@ -18,6 +18,10 @@ No build step, but it loads the SVGs with `fetch`, so serve the folder (`npx ser
 (breathing speed, how often it blinks, how it watches you, and its quirk). The quirks themselves are in `app.js` (`QUIRKS`).
 Letters without a rig get their eyes found automatically; letters with no artwork yet get googly eyes.
 
+Each background is built around a word starting with its letter (א אור, ב בית, ג גינה, ד דרך, ה הר, ו וילון, ז זיגזג,
+ח חישוק, ט טוסט, י יד, כ כלנית, ל לילה, מ מטוס, נ נר, ס סכו״ם, ע עין) and moves with it: the sun glows, the windows light up,
+snow falls on the mountain, the curtains sway, the candle flickers, the eye looks around. That is `BG_RIGS` in `rigs.js`.
+
 ## Swapping artwork
 
 Everything is driven by [`letters.js`](letters.js).
