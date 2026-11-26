@@ -10,6 +10,9 @@ its eyes follow your finger and blink, it breathes, and now and then it does its
 - **Stage** – one big letter on its own background. Tap it to make it react, drag it and let go to watch it spring back,
   tap the background and it looks there. Swipe or use the arrows for the next letter.
 
+- **📖 Story** – *אלף והניצוץ*, a bedtime story: a little spark from the sun travels from letter to letter, through
+  each letter's place, until it goes back to the sky as a star. One page per letter; the text is in [`story.js`](story.js).
+
 No build step, but it loads the SVGs with `fetch`, so serve the folder (`npx serve .`) rather than opening the file directly.
 
 ## How the letters move

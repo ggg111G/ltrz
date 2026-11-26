@@ -501,6 +501,7 @@
       // everyone else turns to look
       ALL.forEach((o) => o !== ch && o.lookAt(e.clientX, e.clientY, 1200));
       await wait(650);
+      mode = 'browse'; spark.classList.remove('on');
       openStage(i);
     });
   });
@@ -595,28 +596,102 @@
     svg.appendChild(g);
   }
 
-  async function openStage(i) {
+  // ------------------------------------------------------------------ story mode
+  const STORY = window.STORY || { pages: [] };
+  const storyCard = $('#storyCard'), spark = $('#spark');
+  let mode = 'browse', page = 0;
+
+  async function openStage(i, { from = 'top' } = {}) {
     idx = (i + L.length) % L.length;
     show('stage');
+    $('#stage').classList.toggle('story', mode === 'story');
     bgFor(L[idx]);
     if (star) star.destroy();
     inner.innerHTML = '';
     star = new Character(L[idx], inner, { big: true });
-    $('#caption').textContent = L[idx].name;
+    $('#caption').textContent = mode === 'story' ? '' : L[idx].name;
     await star.ready;
     star.measure();
-    inner.animate([
-      { transform: 'translateY(-110vh) scale(.7,1.3)' },
-      { transform: 'translateY(0) scale(1.3,.7)', offset: 0.6 },
-      { transform: 'translateY(-30px) scale(.92,1.08)', offset: 0.8 },
-      { transform: 'none' },
-    ], { duration: reduceMotion ? 1 : 750, easing: 'ease-in' });
-    setTimeout(sfx.boing, 420);
-    setTimeout(() => star && star.blink(), 900);
+    const entrance = from === 'top'
+      ? [{ transform: 'translateY(-110vh) scale(.7,1.3)' }, { transform: 'translateY(0) scale(1.3,.7)', offset: 0.6 }, { transform: 'translateY(-30px) scale(.92,1.08)', offset: 0.8 }, { transform: 'none' }]
+      : (() => { const s = from === 'left' ? -1 : 1; return [
+          { transform: `translateX(${s * 100}vw)` },
+          { transform: `translateX(${s * 66}vw) translateY(-40px) rotate(${-s * 6}deg)`, offset: 0.25 },
+          { transform: `translateX(${s * 33}vw) translateY(0)`, offset: 0.5 },
+          { transform: `translateX(${s * 10}vw) translateY(-30px) rotate(${-s * 4}deg)`, offset: 0.75 },
+          { transform: 'translateX(0) scale(1.15,.85)', offset: 0.92 },
+          { transform: 'none' }]; })();
+    inner.animate(entrance, { duration: reduceMotion ? 1 : from === 'top' ? 750 : 1100, easing: from === 'top' ? 'ease-in' : 'ease-out' });
+    setTimeout(sfx.boing, from === 'top' ? 420 : 950);
+    setTimeout(() => star && star.blink(), 1100);
   }
-  $('#nextBtn').addEventListener('click', () => { sfx.whoosh(); openStage(idx + 1); });
-  $('#prevBtn').addEventListener('click', () => { sfx.whoosh(); openStage(idx - 1); });
 
+  function setCard(html) {
+    storyCard.innerHTML = html;
+    storyCard.animate([{ transform: 'translateY(30px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 450, delay: 500, fill: 'backwards', easing: 'ease-out' });
+  }
+
+  async function openPage(p, dir = 1) {
+    mode = 'story';
+    const pages = STORY.pages;
+    if (p < 0) { page = 0; return; }
+    if (p >= pages.length) { theEnd(); return; }
+    const leaving = spark.classList.contains('on') && dir;
+    if (leaving) await sparkAway(dir);
+    page = p;
+    const li = L.findIndex((x) => x.id === pages[p].id);
+    // forward pages arrive from the left (the way Hebrew reads), going back arrives from the right
+    await openStage(li, { from: p === 0 && dir === 0 ? 'top' : dir > 0 ? 'left' : 'right' });
+    setCard(`${p === 0 ? `<h2>${STORY.title}</h2>` : ''}<p>${pages[p].text}</p><span class="pg" dir="ltr">${p + 1} / ${pages.length}</span>`);
+    sparkIn();
+  }
+
+  function theEnd() {
+    sparkAway(1, true);
+    setCard(`<h2>סוף</h2><p>🌙 לילה טוב 🌙</p><button class="pill" id="againBtn">📖 עוד פעם</button>`);
+    setTimeout(() => { const b = $('#againBtn'); if (b) b.onclick = () => { sfx.pop(); openPage(0, 0); }; }, 0);
+    page = STORY.pages.length;
+    if (star) { star.sleeping = true; star.eyes.forEach((e) => e.eye.animate([{ transform: 'scaleY(1)' }, { transform: 'scaleY(.06)' }], { duration: 1600, fill: 'forwards', delay: 800 })); }
+  }
+
+  // the little spark that travels through the story
+  let sparkFloat;
+  function sparkIn() {
+    spark.getAnimations().forEach((x) => x.cancel());
+    spark.classList.add('on');
+    const r = hero.getBoundingClientRect();
+    const x = r.right - r.width * 0.05, y = r.top + r.height * 0.05;
+    spark.style.left = x + 'px'; spark.style.top = y + 'px';
+    spark.animate([{ transform: 'translate(-60vw, -30vh) scale(.3)', opacity: 0 }, { transform: 'translate(0,0) scale(1.4)', opacity: 1, offset: 0.8 }, { transform: 'scale(1)' }], { duration: 900, delay: 900, fill: 'backwards', easing: 'ease-out' });
+    if (sparkFloat) sparkFloat.cancel();
+    sparkFloat = spark.animate([{ translate: '0 0' }, { translate: '-14px -18px' }, { translate: '10px -8px' }, { translate: '0 0' }], { duration: 3200, iterations: Infinity, easing: 'ease-in-out', composite: 'add' });
+  }
+  async function sparkAway(dir, toSky = false) {
+    const kf = toSky
+      ? [{ transform: 'none' }, { transform: 'translate(-20vw, -60vh) scale(.5)' }]
+      : [{ transform: 'none' }, { transform: `translate(${dir > 0 ? -70 : 70}vw, -20vh) scale(.6)`, opacity: 0.2 }];
+    sfx.sparkle();
+    await spark.animate(kf, { duration: 600, easing: 'ease-in', fill: toSky ? 'forwards' : 'none' }).finished.catch(() => {});
+    if (!toSky) spark.classList.remove('on');
+  }
+  spark.addEventListener('click', () => {
+    sfx.sparkle();
+    spark.animate([{ transform: 'scale(1) rotate(0)' }, { transform: 'scale(1.8) rotate(180deg)' }, { transform: 'scale(1) rotate(360deg)' }], { duration: 700 });
+    if (star) { const r = spark.getBoundingClientRect(); star.lookAt(r.left, r.top, 1500); }
+  });
+
+  function go(delta) {
+    sfx.whoosh();
+    if (mode === 'story') openPage(page + delta, delta);
+    else openStage(idx + delta);
+  }
+  $('#nextBtn').addEventListener('click', () => go(1));
+  $('#prevBtn').addEventListener('click', () => go(-1));
+  $('#storyBtn').addEventListener('click', () => { sfx.pop(); openPage(0, 0); });
+  document.querySelectorAll('[data-go]').forEach((b) => b.addEventListener('click', () => {
+    mode = 'browse'; spark.classList.remove('on'); spark.getAnimations().forEach((a) => a.cancel()); sparkFloat = null;
+  }));
+  // browsing from the home grid leaves story mode
   // drag the character around; it springs home when let go
   let drag = null;
   hero.addEventListener('pointerdown', (e) => {
@@ -653,7 +728,7 @@
 
   // tapping the background: the character looks there
   $('#stage').addEventListener('pointerdown', (e) => {
-    if (e.target.closest('#hero, .round') || !star) return;
+    if (e.target.closest('#hero, .round, #spark, #storyCard') || !star) return;
     star.lookAt(e.clientX, e.clientY, 1500);
     if (Math.random() < 0.35) star.blink();
   });
@@ -664,8 +739,8 @@
   $('#stage').addEventListener('touchend', (e) => {
     if (sw == null) return;
     const dx = e.changedTouches[0].clientX - sw; sw = null;
-    if (Math.abs(dx) > 70) { sfx.whoosh(); openStage(idx + (dx > 0 ? 1 : -1)); }
+    if (Math.abs(dx) > 70) go(dx > 0 ? 1 : -1);
   });
 
-  window.__letterz = { ALL, openStage };
+  window.__letterz = { ALL, openStage, openPage };
 })();

@@ -17,6 +17,7 @@
   <main id="home" class="screen active">
     <header class="top">
       <h1 class="title">אוֹתִיּוֹת</h1>
+      <button id="storyBtn" class="pill" aria-label="סיפור">📖 סיפור</button>
     </header>
     <div id="grid"></div>
   </main>
@@ -27,12 +28,15 @@
     <button class="round back" data-go="home" aria-label="בית">🏠</button>
     <div id="hero" class="hero"><div class="hero-inner"></div><div class="shadow"></div></div>
     <div id="caption" class="caption"></div>
+    <button id="spark" aria-label="ניצוץ"></button>
+    <div id="storyCard" class="story-card"></div>
     <button class="round nav prev" id="prevBtn" aria-label="הקודמת">➡️</button>
     <button class="round nav next" id="nextBtn" aria-label="הבאה">⬅️</button>
   </section>
 
   <script src="letters.js"></script>
   <script src="rigs.js"></script>
+  <script src="story.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
