@@ -13,6 +13,10 @@ its eyes follow your finger and blink, it breathes, and now and then it does its
 - **📖 Story** – *אלף והניצוץ*, a bedtime story: a little spark from the sun travels from letter to letter, through
   each letter's place, until it goes back to the sky as a star. One page per letter; the text is in [`story.js`](story.js).
 
+- **✏️ השם שלי** – drag letters (or tap them) into the row to spell a name. Letters standing side by side hold hands
+  and dance. A grown-up can type a name in the box; the row then shows faint letters to fill, and the finished name
+  gets a party. Final forms (ך ם ן ף ץ) and undrawn letters show as plain letters with eyes for now.
+
 No build step, but it loads the SVGs with `fetch`, so serve the folder (`npx serve .`) rather than opening the file directly.
 
 ## How the letters move

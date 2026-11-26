@@ -436,7 +436,9 @@
 
   function confetti(c) {
     const r = c.svg.getBoundingClientRect();
-    const x = r.left + r.width / 2, y = r.top + r.height * 0.3;
+    confettiAt(r.left + r.width / 2, r.top + r.height * 0.3);
+  }
+  function confettiAt(x, y) {
     for (let k = 0; k < 26; k++) {
       const b = document.createElement('div');
       b.className = 'bit';
@@ -742,5 +744,5 @@
     if (Math.abs(dx) > 70) go(dx > 0 ? 1 : -1);
   });
 
-  window.__letterz = { ALL, openStage, openPage };
+  window.__letterz = { ALL, openStage, openPage, Character, sfx, confettiAt, show, remeasure, wait, rand };
 })();

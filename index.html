@@ -17,7 +17,10 @@
   <main id="home" class="screen active">
     <header class="top">
       <h1 class="title">אוֹתִיּוֹת</h1>
-      <button id="storyBtn" class="pill" aria-label="סיפור">📖 סיפור</button>
+      <div class="modes">
+        <button id="namesBtn" class="pill" aria-label="השם שלי">✏️ השם שלי</button>
+        <button id="storyBtn" class="pill" aria-label="סיפור">📖 סיפור</button>
+      </div>
     </header>
     <div id="grid"></div>
   </main>
@@ -34,9 +37,23 @@
     <button class="round nav next" id="nextBtn" aria-label="הבאה">⬅️</button>
   </section>
 
+  <!-- Name builder -->
+  <section id="names" class="screen">
+    <button class="round back" data-go="home" aria-label="בית">🏠</button>
+    <div class="grownup">
+      <label for="nameInput">שם:</label>
+      <input id="nameInput" type="text" maxlength="10" autocomplete="off" placeholder="אפשר להקליד שם">
+      <button id="clearBtn" class="pill small" aria-label="להתחיל מחדש">↺</button>
+    </div>
+    <div id="nameRow"><svg id="arms" aria-hidden="true"></svg><div id="slots"></div></div>
+    <div id="nameShow"></div>
+    <div id="tray"></div>
+  </section>
+
   <script src="letters.js"></script>
   <script src="rigs.js"></script>
   <script src="story.js"></script>
   <script src="app.js"></script>
+  <script src="names.js"></script>
 </body>
 </html>
