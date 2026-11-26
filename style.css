@@ -90,7 +90,7 @@ button { font: inherit; color: inherit; border: 0; cursor: pointer; }
 .tile:active .art { transform: scale(.9); }
 
 /* ---------- characters ---------- */
-.critter { width: 100%; height: 100%; display: block; overflow: visible; filter: drop-shadow(0 5px 0 rgba(74,21,32,.2)); }
+.critter { width: 100%; height: 100%; display: block; overflow: visible; }
 .critter .eye, .critter .part, .critter .body-g, .critter .breathe-g { transform-box: fill-box; }
 .critter .eye { transform-origin: center; }
 .critter .body-g { transform-origin: 50% 100%; }
@@ -107,6 +107,8 @@ button { font: inherit; color: inherit; border: 0; cursor: pointer; }
 #stageBg { position: absolute; inset: 0; overflow: hidden; }
 #stageBg .bg-svg { width: 100%; height: 100%; display: block; }
 #stageBg .bgpart { transform-box: fill-box; }
+/* the Figma layout grid was exported with the backgrounds; keep it hidden */
+#stageBg [stroke="black"][stroke-opacity] { display: none; }
 
 .round {
   position: absolute; z-index: 5; width: 64px; height: 64px; border-radius: 50%;
@@ -126,11 +128,6 @@ button { font: inherit; color: inherit; border: 0; cursor: pointer; }
   touch-action: none; z-index: 3; cursor: grab;
 }
 .hero-inner { width: 100%; height: 100%; will-change: transform; }
-.hero-inner .critter { filter: drop-shadow(0 10px 0 rgba(74,21,32,.25)); }
-.hero .shadow {
-  position: absolute; left: 20%; right: 20%; bottom: -6%; height: 7%;
-  background: rgba(74,21,32,.22); border-radius: 50%; z-index: -1; filter: blur(2px);
-}
 
 .caption {
   position: absolute; left: 0; right: 0; bottom: max(110px, calc(env(safe-area-inset-bottom) + 100px));
@@ -207,7 +204,7 @@ button { font: inherit; color: inherit; border: 0; cursor: pointer; }
 }
 .tray-item { aspect-ratio: 1 / 1.15; background: none; padding: 4px; touch-action: none; }
 .tray-item .art { width: 100%; height: 100%; pointer-events: none; }
-.drag-ghost { position: fixed; left: 0; top: 0; z-index: 30; pointer-events: none; filter: drop-shadow(0 12px 6px rgba(74,21,32,.3)); }
+.drag-ghost { position: fixed; left: 0; top: 0; z-index: 30; pointer-events: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .title, #sky .cloud, #sky .sun, .critter .breathe-g { animation: none; }
